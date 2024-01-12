@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">MineblockGO</string>
+    <string name="title_activity_map">MapActivity</string>
+    <string name="permissionMessage">Aplikacja wymaga dostępu do uprawnień związanych z lokalizacją GPS. Bez ich udzielenia korzystanie z aplikacji jest niemożliwe.</string>
+    <string name="permissionButton">Zezwól</string>
+    <string name="permissionTitle">Wymagane uprawnienia</string>
+    <string name="main_button">Main button</string>
+    <string name="center_user">Center user</string>
 </resources>
