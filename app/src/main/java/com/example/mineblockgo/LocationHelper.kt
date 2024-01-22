@@ -53,13 +53,15 @@ class LocationHelper(private val context: Context, private val onLocationChange:
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
         ) {
+            if (overlayView.visibility == View.VISIBLE) {
+                hidePermissionOverlay()
+            }
             fusedLocationClient.requestLocationUpdates(
                 locationRequest,
                 locationCallback,
                 Looper.getMainLooper()
             )
         } else {
-            // Poproś użytkownika o uprawnienia lokalizacyjne
             requestLocationPermission()
         }
     }
@@ -67,8 +69,6 @@ class LocationHelper(private val context: Context, private val onLocationChange:
     fun stopLocationUpdates() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
-
-
 
     fun startLocationUpdates() {
         requestLocationUpdates()

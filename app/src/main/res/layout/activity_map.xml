@@ -20,23 +20,62 @@
         map:layout_constraintTop_toTopOf="parent"
         map:layout_constraintVertical_bias="0.0" />
 
-    <Button
-        android:id="@+id/mainBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/main_button"
-        map:layout_constraintBottom_toBottomOf="@+id/mapFragment"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintStart_toStartOf="parent" />
-
     <include layout="@layout/overlay_permission" />
+
+
 
     <ImageButton
         android:id="@+id/centerUserBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/circle"
         android:contentDescription="@string/center_user"
         map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintEnd_toEndOf="parent"
         map:srcCompat="@drawable/baseline_my_location_24" />
+
+    <ImageButton
+        android:id="@+id/inventoryBtn"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/circle"
+        android:contentDescription="@string/center_user"
+        android:padding="15dp"
+        android:scaleType="fitCenter"
+        map:layout_constraintBottom_toBottomOf="parent"
+        map:layout_constraintStart_toEndOf="@+id/mainBtn"
+        map:layout_constraintTop_toTopOf="@+id/mainBtn"
+        map:srcCompat="@drawable/chest1" />
+
+    <ImageButton
+        android:id="@+id/settingsBtn"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/circle"
+        android:contentDescription="@string/center_user"
+        android:padding="15dp"
+        android:scaleType="fitCenter"
+        map:layout_constraintBottom_toBottomOf="parent"
+        map:layout_constraintEnd_toStartOf="@+id/mainBtn"
+        map:layout_constraintTop_toTopOf="@+id/mainBtn"
+        map:srcCompat="@drawable/cog" />
+
+    <ImageButton
+        android:id="@+id/mainBtn"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_margin="5dp"
+        android:background="@drawable/fight_btn_bg"
+        android:padding="15dp"
+        android:scaleType="fitCenter"
+        map:layout_constraintBottom_toBottomOf="@+id/mapFragment"
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintStart_toStartOf="parent"
+        map:srcCompat="@drawable/diamond_sword" />
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

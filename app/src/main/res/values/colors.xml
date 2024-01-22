@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="mainButtonFight">#ff4a4a</color>
+    <color name="mainButtonChest">#fffcd6</color>
+    <color name="mainButtonShop">#4eba4e</color>
 </resources>
