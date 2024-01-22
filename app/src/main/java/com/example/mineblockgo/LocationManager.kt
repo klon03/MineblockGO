@@ -147,7 +147,7 @@ class LocationManager(private val context: Context, private val mMap: GoogleMap,
     }
 
     private fun monsterSnippet(mob: Monster) : String {
-        return context.getString(R.string.strength_snippet, mob.minStrength.toString(), mob.maxStrength.toString())
+        return "${mob.minStrength} - ${mob.maxStrength} strength"
     }
 
     private fun chestSnippet(chest: Chest) : String {
