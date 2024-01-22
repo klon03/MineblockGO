@@ -147,7 +147,7 @@ class LocationManager(private val context: Context, private val mMap: GoogleMap,
     }
 
     private fun monsterSnippet(mob: Monster) : String {
-        return context.getString(R.string.strength_snippet, mob.minStrength.toString(), mob.maxStrength.toString())
+        return "${mob.minStrength} - ${mob.maxStrength} strength"
     }
 
     private fun chestSnippet(chest: Chest) : String {
@@ -292,7 +292,10 @@ class LocationManager(private val context: Context, private val mMap: GoogleMap,
 
                 }
                 MapActivity.MainButtonMode.CHEST -> TODO()
-                MapActivity.MainButtonMode.SHOP -> TODO()
+                MapActivity.MainButtonMode.SHOP -> {
+                    val intent = Intent(context, ShopActivity::class.java)
+                    context.startActivity(intent)
+                }
                 else -> {}
             }
         }
