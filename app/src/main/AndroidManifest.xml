@@ -37,6 +37,7 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".EQActivity" />
         <activity android:name=".ShopActivity"/>
     </application>
 
