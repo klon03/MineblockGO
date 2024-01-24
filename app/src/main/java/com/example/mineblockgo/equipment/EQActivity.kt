@@ -13,6 +13,13 @@ class EQActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_eq)
 
+        //tymczasowe dodawanie !!!!!!!!!!
+        /*
+        val xd = Weapon(0,"dupa dupa cyce cyce", R.drawable.diamond_sword, 10,10,10)
+        val dx = Weapon(3,"drugi mieczol", R.drawable.diamond_sword, 10,10,10)
+        DatabaseManager.getDatabaseInstance().insertItem(xd)
+        DatabaseManager.getDatabaseInstance().insertItem(dx)*/
+
         //to musi być w main wpisane
         val imageButton0 = findViewById<ImageButton>(R.id.imageButton0)
         val imageButton1 = findViewById<ImageButton>(R.id.imageButton1)
@@ -28,17 +35,10 @@ class EQActivity : AppCompatActivity() {
         val eq = Equipment(this, imageButtons)
 
         eq.setEquipmentButtons()
-        val activeButton = findViewById<Button>(R.id.useButton)
-        eq.setUseItem(activeButton)
-        eq.setWeaponImageInImageView(0)
-        //do tąd
-
-
-        val sword = Weapon("Sword1", R.drawable.diamond_sword, 5, 20, 1)
-        eq.addWeaponToEquipment(Weapon("Sword1", R.drawable.diamond_sword, 5, 20, 1))
-        eq.addWeaponToEquipment(Weapon("Sword hujowy", R.drawable.cog, 5, 20, 1))
+        eq.setBtnImage()
 
         eq.setWeaponImageInImageView(0)
+
 
         val exit = findViewById<ImageButton>(R.id.exit)
 

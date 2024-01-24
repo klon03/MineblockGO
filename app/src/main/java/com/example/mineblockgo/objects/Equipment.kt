@@ -8,33 +8,37 @@ import android.app.Activity
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.mineblockgo.DatabaseHelper
 
 class Equipment(private val context: Context, private val imageButtons: List<ImageButton>): AppCompatActivity(){
     private val defaultImage = R.drawable.default_image
-    private val weapons = arrayOfNulls<Weapon>(9)
     private var selected = 0
+    private val db = DatabaseManager.getDatabaseInstance()
+    private val weapons = db.getAllItems()
 
-    private fun setBtnImage(index: Int, imageResId: Int) { // to jest pojebane ale działa
-        val imageButtonId = context.resources.getIdentifier("imageButton$index", "id", context.packageName)
-        val imageButton = (context as? Activity)?.findViewById<ImageButton>(imageButtonId)
-        imageButton?.setImageResource(imageResId)
-    }
 
-    fun addWeaponToEquipment(newWeapon: Weapon) { //tutaj sobie adam dodajesz obiekt weapon do eq jak już sobie ziomek kupi
-        for (i in weapons.indices) {
-            if (weapons[i] == null) {
-                weapons[i] = newWeapon
-                setBtnImage(i, newWeapon.iconId)
-                return
+    fun setBtnImage() {
+        for( i in 0..8)
+        {
+            val imageButtonId = context.resources.getIdentifier("imageButton$i", "id", context.packageName)
+            val imageButton = (context as? Activity)?.findViewById<ImageButton>(imageButtonId)
+
+            if(i in 0 until weapons.size){
+                imageButton?.setImageResource(weapons[i].iconId)
+            } else{
+                imageButton?.setImageResource(defaultImage)
             }
-        }
 
-        println("full") //jak sie miejsce skończy
+        }
+    }
+/*
+    fun addWeaponToEquipment(newWeapon: Weapon) {
+        db.insertItem(newWeapon)
     }
 
     private fun removeWeapon(rmWeaponIndex: Int){
         weapons[rmWeaponIndex] = null
-    }
+    }*/
 
     fun setEquipmentButtons() {
         imageButtons.forEachIndexed { index, imageButton ->
@@ -45,22 +49,21 @@ class Equipment(private val context: Context, private val imageButtons: List<Ima
     }
 
     fun setWeaponImageInImageView(index: Int) {
+        val imageView = (context as? Activity)?.findViewById<ImageView>(R.id.imageView)
+        val textView = (context as? Activity)?.findViewById<TextView>(R.id.textView)
         if (index in 0 until weapons.size) {
             selected = index
             val selectedWeapon = weapons[index]
-            val imageView = (context as? Activity)?.findViewById<ImageView>(R.id.imageView)
-            val textView = (context as? Activity)?.findViewById<TextView>(R.id.textView)
-            if(selectedWeapon != null) {
-                imageView?.setImageResource(selectedWeapon.iconId)
-                textView?.text = "${selectedWeapon.name} \nATK: ${selectedWeapon.damage} \nDurability: ${selectedWeapon.endurance}"
-            }
-            else {
-                imageView?.setImageResource(defaultImage)
-                textView?.text = ""
-            }
+            imageView?.setImageResource(selectedWeapon.iconId)
+            textView?.text = "${selectedWeapon.name} \nATK: ${selectedWeapon.damage} \nDurability: ${selectedWeapon.endurance}"
+
+
+        } else {
+            imageView?.setImageResource(defaultImage)
+            textView?.text = ""
         }
     }
-
+    /*
     fun setUseItem(btn: Button){
         btn.setOnClickListener {
             if(weapons[selected]!=null){
@@ -80,5 +83,5 @@ class Equipment(private val context: Context, private val imageButtons: List<Ima
 
             }
         }
-    }
+    }*/
 }

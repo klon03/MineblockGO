@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.example.mineblockgo.objects.Weapon
 import com.google.android.gms.maps.model.LatLng
 
 object DatabaseManager {
@@ -38,10 +39,13 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
             "CREATE TABLE IF NOT EXISTS shops " +
                     "(id INTEGER PRIMARY KEY AUTOINCREMENT, tag TEXT, lat REAL, lng REAL)"
         )
+        db?.execSQL(
+            "CREATE TABLE IF NOT EXISTS items " +
+                    "(id INTEGER PRIMARY KEY, name TEXT, iconID INTEGER, endurance INTEGER, dmg INTEGER)"
+        )
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-
     }
 
     fun insertMonster(monster: Monster) {
@@ -75,6 +79,23 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         }
 
         writableDatabase.insert("shops", null, values)
+    }
+
+    fun insertItem(item: Weapon){
+        //removeItem(item.wpID)
+        val values = ContentValues().apply {
+            put("id", item.wpID)
+            put("name", item.name)
+            put("iconID", item.iconId)
+            put("endurance", item.endurance)
+            put("dmg", item.damage)
+        }
+
+        writableDatabase.insert("items", null, values)
+    }
+
+    fun removeItem(itemId: Int) { //usuwanie itemka z bazy
+        writableDatabase.delete("items", "id = ?", arrayOf(itemId.toString()))
     }
 
     fun getAllMonsters(): List<Monster> {
@@ -156,6 +177,28 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         return shopList
     }
 
+    fun getAllItems(): List<Weapon>{
+        val itemList = mutableListOf<Weapon>()
+
+        val query = "SELECT * FROM items"
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(query, null)
+
+        cursor.use {
+            while (it.moveToNext()) {
+                val id = it.getInt(0)
+                val name = it.getString(1)
+                val iconID = it.getInt(2)
+                val endurance = it.getInt(3)
+                val dmg = it.getInt(4)
+                val weapon = Weapon(id, name, iconID, endurance, dmg, 0)
+                itemList.add(weapon)
+
+            }
+        }
+
+        return itemList
+    }
 
 
 }

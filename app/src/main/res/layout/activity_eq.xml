@@ -35,11 +35,11 @@
                 android:layout_weight="1"
                 android:text="TextView" />
 
-            <Button
+            <!--<Button
                 android:id="@+id/useButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Use" />
+                android:text="Use" /> -->
 
         </LinearLayout>
 
