@@ -4,8 +4,13 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+
 import com.example.mineblockgo.objects.Weapon
+
+import android.util.Log
+
 import com.google.android.gms.maps.model.LatLng
+import java.sql.SQLException
 
 object DatabaseManager {
     private var instance: DatabaseHelper? = null
@@ -40,9 +45,17 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
                     "(id INTEGER PRIMARY KEY AUTOINCREMENT, tag TEXT, lat REAL, lng REAL)"
         )
         db?.execSQL(
+
             "CREATE TABLE IF NOT EXISTS items " +
                     "(id INTEGER PRIMARY KEY, name TEXT, iconID INTEGER, endurance INTEGER, dmg INTEGER)"
         )
+        db?.execSQL(
+            "CREATE TABLE IF NOT EXISTS user " +
+                    "(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, value_int INTEGER);"
+        )
+        db?.execSQL("INSERT INTO user (name, value_int) VALUES ('gold', 50)")
+        db?.execSQL("INSERT INTO user (name, value_int) VALUES ('experience', 0)")
+
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -187,6 +200,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         return shopList
     }
 
+
     fun getAllItems(): List<Weapon>{
         val itemList = mutableListOf<Weapon>()
 
@@ -210,5 +224,102 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         return itemList
     }
 
+    fun selectMonster(tag: String): Monster? {
+        val db = this.readableDatabase
+        var monster: Monster? = null
+        val cursor = db.rawQuery("SELECT * FROM monsters WHERE tag = ?", arrayOf(tag))
 
+        cursor.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val name = cursor.getString(1)
+                val tag = cursor.getString(2)
+                val strength = cursor.getString(3).toInt()  // Konwersja na Int
+                val lat = cursor.getString(4).toDouble()    // Konwersja na Double
+                val lng = cursor.getString(5).toDouble()    // Konwersja na Double
+
+                val template = MonsterRepository.monsters.find { it.name == name }
+                if (template != null) {
+                    monster = Monster(
+                        name = name,
+                        description = template.description,
+                        minStrength = template.minStrength,
+                        maxStrength = template.maxStrength
+                    )
+                    monster!!.addPosition(LatLng(lat, lng))
+                    monster!!.overwrite(tag, strength)
+                }
+            }
+        }
+
+        return monster
+    }
+
+    fun selectChest(tag: String): Chest? {
+        val db = this.readableDatabase
+        var chest: Chest? = null
+        val cursor = db.rawQuery("SELECT * FROM chests WHERE tag = ?", arrayOf(tag))
+
+
+        cursor.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val simpleName = cursor.getString(1)
+                val tag = cursor.getString(2)
+                val lat = cursor.getString(3).toDouble()
+                val lng = cursor.getString(4).toDouble()
+
+                val template = ChestRepository.chests.find { it.simpleName == simpleName }
+                if (template != null) {
+                    chest = Chest(
+                        name = template.name,
+                        description = template.description,
+                        minGold = template.minGold,
+                        maxGold = template.maxGold,
+                        isItems = template.isItems,
+                        simpleName = simpleName
+                    )
+                    chest!!.addPosition(LatLng(lat, lng))
+                    chest!!.overwrite(tag)
+                }
+            }
+        }
+
+        return chest
+    }
+
+    fun deleteRowByTag(tableName: String, tag: String): Boolean {
+        val db = writableDatabase
+
+        return try {
+            val affectedRows = db.delete(tableName, "tag=?", arrayOf(tag))
+            affectedRows > 0
+        } catch (e: SQLException) {
+            false
+        }
+    }
+
+    fun getExperience(): Int {
+        val db = readableDatabase
+        val cursor = db?.rawQuery("SELECT value_int FROM user WHERE name = ?", arrayOf("experience"))
+
+        return if (cursor != null && cursor.moveToFirst()) {
+            val level = cursor.getInt(0)
+            cursor.close()
+            Log.w("ww", "pobrano $level")
+            level
+        } else {
+            cursor?.close()
+            -1
+        }
+    }
+
+    fun updateExperience(value: Int) {
+        val db = this.writableDatabase
+
+        val currentExp = getExperience()
+        val newExp = maxOf(currentExp + value, 0)
+        Log.w("ww", "dodano $newExp")
+        val contentValues = ContentValues()
+        contentValues.put("value_int", newExp)
+        db.update("user", contentValues, "name=?", arrayOf("experience"))
+    }
 }

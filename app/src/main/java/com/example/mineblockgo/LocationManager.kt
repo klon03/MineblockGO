@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -22,13 +24,14 @@ class LocationManager(private val context: Context, private val mMap: GoogleMap,
     private val monsters: MutableList<Monster> = mutableListOf()
     private val chests: MutableList<Chest> = mutableListOf()
     private val shops: MutableList<Shop> = mutableListOf()
+    private val markers: MutableList<Marker> = mutableListOf()
 
     private val maxDistance: Int = 1500
     private val minDistance: Int = 100
     private val range: Int = 100
 
-    private var entityInRange: String? = null
-    private var entityInRangeType: MapActivity.MainButtonMode? = null
+    var entityInRange: String? = null
+    var entityInRangeType: MapActivity.MainButtonMode? = null
     private val databaseHelper = DatabaseManager.getDatabaseInstance()
 
     private val maxMonsters = 5
@@ -165,6 +168,7 @@ class LocationManager(private val context: Context, private val mMap: GoogleMap,
                 MarkerOptions().position(position).title(title).icon(customMarkerIcon).snippet(snippet)
             )
         marker!!.tag = tag
+        markers.add(marker)
     }
 
     private fun addCircle(position: LatLng, tag: String) {
@@ -280,29 +284,35 @@ class LocationManager(private val context: Context, private val mMap: GoogleMap,
         return closestType
     }
 
-    // Uruchomienie odpowiedniej aktywności po kliknięciu głównego przycisku
-    fun startActivity() {
-        if (entityInRange != null) {
-            when(entityInRangeType) {
-                MapActivity.MainButtonMode.COMBAT -> {
-
-                    val intent = Intent(context, CombatActivity::class.java)
-                    intent.putExtra("tag", entityInRange)
-                    context.startActivity(intent)
-
-                }
-                MapActivity.MainButtonMode.CHEST -> TODO()
-                MapActivity.MainButtonMode.SHOP -> {
-                    val intent = Intent(context, ShopActivity::class.java)
-                    context.startActivity(intent)
-                }
-                else -> {}
-            }
-        }
-    }
 
     private fun isInDistance(entityPosition: LatLng) : Boolean {
         val distance = calculateDistance(entityPosition, currentLocationMarker.position)
         return distance <= maxDistance
+    }
+
+    fun deleteEntity(tag: String, table: String) {
+        removeMarker(tag)
+
+        when (table) {
+            "monsters" -> {
+                val foundMonster = monsters.find { it.id == tag }
+                if (monsters.removeIf { it.id == tag }) {
+                    Log.w("fdf", "usunieto potwora")
+                }
+            "chests" -> {
+                chests.removeIf { it.id == tag }
+            }
+        }
+
+        databaseHelper.deleteRowByTag(table, tag)
+        entityInRange = null
+        entityInRangeType = null
+    }
+
+    private fun removeMarker(tag: String) {
+        val foundMarker = markers.find { it.tag == tag }
+        foundMarker?.remove()
+        markers.remove(foundMarker)
+
     }
 }

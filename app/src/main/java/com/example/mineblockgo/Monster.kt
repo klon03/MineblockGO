@@ -7,6 +7,7 @@ import java.util.UUID
 data class Monster(val name: String, val description: String, val minStrength: Int, val maxStrength: Int) : Serializable {
     var strength: Int = (minStrength..maxStrength).random()
     var id: String = UUID.randomUUID().toString()
+    var startingStrength: Int = strength
     lateinit var position: LatLng private set
 
     fun addPosition(latLng: LatLng) {
@@ -16,6 +17,15 @@ data class Monster(val name: String, val description: String, val minStrength: I
     fun overwrite(id: String, strength: Int) {
         this.id = id
         this.strength = strength
+        startingStrength = strength
+    }
+
+    fun dealDamage(dmg: Int) {
+        strength = (strength - dmg).coerceAtLeast(0)
+    }
+
+    fun isDead(): Boolean {
+        return strength <= 0
     }
 }
 
