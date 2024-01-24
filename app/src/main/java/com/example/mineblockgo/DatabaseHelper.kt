@@ -4,7 +4,9 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import com.google.android.gms.maps.model.LatLng
+import java.sql.SQLException
 
 object DatabaseManager {
     private var instance: DatabaseHelper? = null
@@ -38,6 +40,12 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
             "CREATE TABLE IF NOT EXISTS shops " +
                     "(id INTEGER PRIMARY KEY AUTOINCREMENT, tag TEXT, lat REAL, lng REAL)"
         )
+        db?.execSQL(
+            "CREATE TABLE IF NOT EXISTS user " +
+                    "(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, value_int INTEGER);"
+        )
+        db?.execSQL("INSERT INTO user (name, value_int) VALUES ('gold', 0)")
+        db?.execSQL("INSERT INTO user (name, value_int) VALUES ('experience', 0)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -215,5 +223,42 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         }
 
         return chest
+    }
+
+    fun deleteRowByTag(tableName: String, tag: String): Boolean {
+        val db = writableDatabase
+
+        return try {
+            val affectedRows = db.delete(tableName, "tag=?", arrayOf(tag))
+            affectedRows > 0
+        } catch (e: SQLException) {
+            false
+        }
+    }
+
+    fun getExperience(): Int {
+        val db = readableDatabase
+        val cursor = db?.rawQuery("SELECT value_int FROM user WHERE name = ?", arrayOf("experience"))
+
+        return if (cursor != null && cursor.moveToFirst()) {
+            val level = cursor.getInt(0)
+            cursor.close()
+            Log.w("ww", "pobrano $level")
+            level
+        } else {
+            cursor?.close()
+            -1
+        }
+    }
+
+    fun updateExperience(value: Int) {
+        val db = this.writableDatabase
+
+        val currentExp = getExperience()
+        val newExp = maxOf(currentExp + value, 0)
+        Log.w("ww", "dodano $newExp")
+        val contentValues = ContentValues()
+        contentValues.put("value_int", newExp)
+        db.update("user", contentValues, "name=?", arrayOf("experience"))
     }
 }

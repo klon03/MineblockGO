@@ -11,7 +11,7 @@ import androidx.appcompat.app.AlertDialog
 
 class ChestActivity : AppCompatActivity() {
     private val databaseHelper = DatabaseManager.getDatabaseInstance()
-    private val tag: String? = null
+
     private lateinit var chest: Chest
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +52,7 @@ class ChestActivity : AppCompatActivity() {
             .setMessage("You got $reward gold!")
             .setPositiveButton("OK") { _, _ ->
                 val resultIntent = Intent()
-                resultIntent.putExtra("chestTag", tag)
+                resultIntent.putExtra("tag", chest.id)
                 setResult(Activity.RESULT_OK, resultIntent)
                 finish()
             }

@@ -1,5 +1,8 @@
 package com.example.mineblockgo
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -8,8 +11,11 @@ import android.graphics.ColorMatrixColorFilter
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -27,15 +33,13 @@ import com.google.android.gms.maps.model.Circle
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    companion object {
-        const val MONSTER_REQUEST = 123
-    }
     enum class MainButtonMode {
         DEFAULT,
         COMBAT,
         CHEST,
         SHOP
     }
+    private val databaseHelper = DatabaseManager.getDatabaseInstance()
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapBinding
     private lateinit var permissionOverlay: FrameLayout
@@ -48,6 +52,33 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var circle: Circle
     private lateinit var settingsBtn: ImageButton
     private lateinit var inventoryBtn: ImageButton
+    private lateinit var lvlTxt: TextView
+    private lateinit var expTxt: TextView
+
+    private val combatActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+
+            // Obsługa wyniku z CombatActivity
+            val data: Intent? = result.data
+            val tag = data?.getStringExtra("tag")
+            if (tag != null) {
+                locationManager.deleteEntity(tag, "monsters")
+                updateMainBtn(locationManager.checkVicinity())
+            }
+        }
+    }
+
+    private val chestActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // Obsługa wyniku z CombatActivity
+            val data: Intent? = result.data
+            val tag = data?.getStringExtra("tag")
+            if (tag != null) {
+                locationManager.deleteEntity(tag, "chests")
+                updateMainBtn(locationManager.checkVicinity())
+            }
+        }
+    }
 
 
     private val permissionRequestLocation = 1
@@ -65,7 +96,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         settingsBtn = findViewById(R.id.settingsBtn)
         inventoryBtn = findViewById(R.id.inventoryBtn)
         updateMainBtn(MainButtonMode.DEFAULT)
-
+        turnOffBtn(mainBtn)
+        lvlTxt = findViewById(R.id.userLevelTxt)
+        expTxt = findViewById(R.id.userExpTxt)
+        updateExp()
         inventoryBtn.setOnClickListener {
             // TODO
         }
@@ -79,10 +113,13 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         locationHelper = LocationHelper(this, { location -> updateLocationMarker(location) }, permissionOverlay)
 
+
+
     }
     override fun onResume() {
         super.onResume()
         locationHelper.startLocationUpdates()
+        updateExp()
     }
 
     override fun onPause() {
@@ -118,7 +155,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             currentLocationMarker = mMap.addMarker(MarkerOptions().position(currentLatLng).title("You").icon(customMarkerIcon))
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 16f))
 
-            locationManager = LocationManager(this,mMap, currentLocationMarker!!)
+            locationManager = LocationManager(this, mMap, currentLocationMarker!!)
             locationManager.loadEntitiesOnStartup()
             updateMainBtn(locationManager.checkVicinity())
 
@@ -155,8 +192,8 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun turnOnBtn(btn: ImageButton) {
         btn.isEnabled = true
         btn.alpha = 1f
-        btn.colorFilter = null
-        btn.background.colorFilter = null
+        btn.colorFilter = ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(1f) })
+        btn.background.colorFilter = ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(1f) })
     }
 
     private fun updateMainBtn(newState: MainButtonMode) {
@@ -203,8 +240,54 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         mainBtn.setOnClickListener() {
-            locationManager.startActivity()
+            startActivity()
         }
+    }
+
+    // Uruchomienie odpowiedniej aktywności po kliknięciu głównego przycisku
+    private fun startActivity() {
+        if (locationManager.entityInRange != null) {
+            when(locationManager.entityInRangeType) {
+                MainButtonMode.COMBAT -> {
+
+                    val intent = Intent(this, CombatActivity::class.java)
+                    intent.putExtra("tag", locationManager.entityInRange)
+                    combatActivityResultLauncher.launch(intent)
+
+                }
+                MainButtonMode.CHEST -> {
+
+                    val intent = Intent(this, ChestActivity::class.java)
+                    intent.putExtra("tag", locationManager.entityInRange)
+                    chestActivityResultLauncher.launch(intent)
+                }
+                MainButtonMode.SHOP -> TODO()
+                else -> {}
+            }
+        }
+    }
+
+    private fun calculateLvl(exp: Int): Int {
+        var leftExp = exp
+        var expReq = 20
+        val percentIncrease = 0.1
+        var level = 1
+
+        while (leftExp > 0) {
+            leftExp -= expReq
+            if (leftExp >= 0 ) {level++}
+            expReq += (expReq * percentIncrease).toInt()
+        }
+
+        return maxOf(1, level)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateExp() {
+        val exp = databaseHelper.getExperience()
+        val lvl = calculateLvl(exp).toString()
+        lvlTxt.text = "Level $lvl"
+        expTxt.text = "EXP: $exp"
     }
 }
 

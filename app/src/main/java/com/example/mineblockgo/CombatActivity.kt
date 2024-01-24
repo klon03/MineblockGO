@@ -4,11 +4,8 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
-import android.media.Image
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -43,7 +40,6 @@ class CombatActivity : AppCompatActivity() {
             finish()
             return
         }
-
         // Edycja widoku
         initUi()
 
@@ -123,29 +119,26 @@ class CombatActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
 
         if (isPlayerVictorious) {
-            // usuwanie potwora z bd
-            // zwrot kodu do usunięcia potwora z mapy
-            // dodawanie expa
+
 
             builder.setTitle("You won!")
                 .setMessage("You have slain the monster and gained some experience!")
                 .setPositiveButton("OK") { dialog, _ ->
-
+                    databaseHelper.updateExperience(monster.startingStrength)
+                    val resultIntent = Intent()
+                    resultIntent.putExtra("tag", monster.id)
+                    setResult(Activity.RESULT_OK, resultIntent)
                     dialog.dismiss()
                     finish()
                 }
                 .setCancelable(false)
         } else {
-            // odejmowanie expa
 
             builder.setTitle("You lost!")
                 .setMessage("The monster was better this time! You lost some experience.")
                 .setPositiveButton("OK") { dialog, _ ->
-
+                    databaseHelper.updateExperience(-monster.startingStrength)
                     dialog.dismiss()
-                    val resultIntent = Intent()
-                    resultIntent.putExtra("monsterTag", monster.id)
-                    setResult(Activity.RESULT_OK, resultIntent)
                     finish()
                 }
                 .setCancelable(false)
@@ -153,5 +146,11 @@ class CombatActivity : AppCompatActivity() {
 
         val dialog = builder.create()
         dialog.show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isTimerRunning = false
+        timer?.cancel()
     }
 }
