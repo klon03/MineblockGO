@@ -81,17 +81,27 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         writableDatabase.insert("shops", null, values)
     }
 
-    fun insertItem(item: Weapon){
-        //removeItem(item.wpID)
-        val values = ContentValues().apply {
-            put("id", item.wpID)
-            put("name", item.name)
-            put("iconID", item.iconId)
-            put("endurance", item.endurance)
-            put("dmg", item.damage)
-        }
+    fun insertItem(item: Weapon): Boolean{
+        var weaponList = getAllItems()
+        for (i in 0..8){
+            val containsObjectWithId = weaponList.any { it.wpID == i }
 
-        writableDatabase.insert("items", null, values)
+            if (!containsObjectWithId) {
+                item.wpID = i
+                val values = ContentValues().apply {
+                    put("id", item.wpID)
+                    put("name", item.name)
+                    put("iconID", item.iconId)
+                    put("endurance", item.endurance)
+                    put("dmg", item.damage)
+                }
+
+                writableDatabase.insert("items", null, values)
+                return true
+            }
+
+        }
+        return false
     }
 
     fun removeItem(itemId: Int) { //usuwanie itemka z bazy

@@ -16,6 +16,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.mineblockgo.objects.Weapon
 
 class ShopActivity: AppCompatActivity() {
     private lateinit var shopTextView: TextView
@@ -24,14 +25,16 @@ class ShopActivity: AppCompatActivity() {
     private lateinit var specialOfferLayout: LinearLayout
     private lateinit var backButton: ImageButton
 
+    val databaseHelper = DatabaseManager.getDatabaseInstance()
+
     private var playerCurrency = 100
     //  lista naszych przedmiotów
     private val weaponsList = listOf(
-        Weapon("Wooden Sword",R.drawable.wooden_sword,10,20,15),
-        Weapon("Stone Sword",R.drawable.stone_sword,20,30,30),
-        Weapon("Golden Sword",R.drawable.golden_sword,20,40,50),
-        Weapon("Iron Sword",R.drawable.iron_sword,35,60,70),
-        Weapon("Diamond Sword",R.drawable.diamond_sword,50,70,99)
+        Weapon(1,"Wooden Sword",R.drawable.wooden_sword,10,20,15),
+        Weapon(1,"Stone Sword",R.drawable.stone_sword,20,30,30),
+        Weapon(1,"Golden Sword",R.drawable.golden_sword,20,40,50),
+        Weapon(1,"Iron Sword",R.drawable.iron_sword,35,60,70),
+        Weapon(1,"Diamond Sword",R.drawable.diamond_sword,50,70,99)
     )
 
     @SuppressLint("MissingInflatedId")
@@ -117,9 +120,11 @@ class ShopActivity: AppCompatActivity() {
         val specialOfferBuyButton = Button(this)
 
         specialOfferBuyButton.text = getSpecialPrice(weapon.price)
+        weapon.wpID = 0
         specialOfferBuyButton.setOnClickListener{
 //           kupno specjalnej broni
-            buyWeapon(weapon.price*0.7, specialOfferBuyButton)
+            weapon.price = (0.7*weapon.price).toInt()
+            buyWeapon(weapon, specialOfferBuyButton)
         }
 
 //     dodanie przycisku do layoutu SpecialOfferWeaponLayout
@@ -134,12 +139,12 @@ class ShopActivity: AppCompatActivity() {
     private fun generateShopWeapons(){
         for (i in 1..3){
             val weapon = weaponsList.random()
-            createWeaponsView(weapon)
+            createWeaponsView(weapon, i)
         }
     }
 
     @SuppressLint("SetTextI18n")
-    private fun createWeaponsView(weapon: Weapon){
+    private fun createWeaponsView(weapon: Weapon, n:Int){
         val weaponLayout = LinearLayout(this)
         weaponLayout.orientation = LinearLayout.VERTICAL
         weaponLayout.setPadding(0,0,0,20)
@@ -166,9 +171,12 @@ class ShopActivity: AppCompatActivity() {
 
         val buyButton = Button(this)
         buyButton.text = "${weapon.price} coins"
+        weapon.wpID = n
         buyButton.setOnClickListener{
 //            kupno broni
-            buyWeapon(weapon.price.toDouble(), buyButton)
+
+            buyWeapon(weapon, buyButton)
+
         }
         weaponLayout.addView(buyButton)
 
@@ -177,18 +185,36 @@ class ShopActivity: AppCompatActivity() {
 
     //  funkcja pozwalajaca kupic bron
     @SuppressLint("SetTextI18n")
-    private fun buyWeapon(price: Double, button: Button){
+    private fun buyWeapon(wp:Weapon, button: Button){
+        var price = wp.price.toDouble()
         if (playerCurrency >= price){
             playerCurrency -= price.toInt()
-            updatePlayersGold()
-            button.text = "SOLD OUT"
-            button.isEnabled = false
+            if (databaseHelper.insertItem(wp))
+            {
+                updatePlayersGold()
+                button.text = "SOLD OUT"
+                button.isEnabled = false
+            }
+            else{
+                notEnoughSpaceInEq()
+            }
         }
         else{
             notEnoughGoldAlert()
         }
     }
     //  funkcja ktora wywoluje sie gdy chcemy kupic przedmiot na ktory nas nie stac
+
+    private fun notEnoughSpaceInEq(){
+        val alertBuilder = AlertDialog.Builder(this)
+        alertBuilder.setTitle("Error!")
+        alertBuilder.setMessage("You don have enough space in eq!")
+        alertBuilder.setPositiveButton("ok"){
+                dialog, _ -> dialog.dismiss()
+        }
+        val alert = alertBuilder.create()
+        alert.show()
+    }
     private fun notEnoughGoldAlert(){
         val alertBuilder = AlertDialog.Builder(this)
         alertBuilder.setTitle("Error!")
