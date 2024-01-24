@@ -18,6 +18,6 @@ data class Chest(val name: String, val description: String, val minGold: Int, va
 
 object ChestRepository {
     val chests = listOf(
-        Chest("Chest", "Description description", 5, 50, false, "chest1")
+        Chest("Chest", "Description description", (1..10).random(), (1..10).random() * 10, false, "chest1")
     )
 }
