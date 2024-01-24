@@ -12,12 +12,19 @@ import androidx.appcompat.app.AlertDialog
 class ChestActivity : AppCompatActivity() {
     private val databaseHelper = DatabaseManager.getDatabaseInstance()
     private val tag: String? = null
+    private lateinit var chest: Chest
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chest)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val tag = intent.getStringExtra("tag")
+        // Pobranie obiektu skrzynki
+        val tag = intent.getStringExtra("tag") ?: ""
+        chest = databaseHelper.selectChest(tag) ?: run {
+            finish()
+            return
+        }
+
         val chestOpen: Button = findViewById(R.id.chestOpen)
 
         chestOpen.setOnClickListener {
@@ -36,7 +43,7 @@ class ChestActivity : AppCompatActivity() {
     }
 
     private fun openChest() {
-        val reward = (5..50).random()
+        val reward = (chest.minGold..50).random()
         val goldAmount: TextView = findViewById(R.id.goldAmount)
         goldAmount.text = "Gold: $reward"
 

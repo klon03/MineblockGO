@@ -185,4 +185,35 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
 
         return monster
     }
+
+    fun selectChest(tag: String): Chest? {
+        val db = this.readableDatabase
+        var chest: Chest? = null
+        val cursor = db.rawQuery("SELECT * FROM chests WHERE tag = ?", arrayOf(tag))
+
+        cursor.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val simpleName = cursor.getString(1)
+                val tag = cursor.getString(2)
+                val lat = cursor.getString(3).toDouble()
+                val lng = cursor.getString(4).toDouble()
+
+                val template = ChestRepository.chests.find { it.simpleName == simpleName }
+                if (template != null) {
+                    chest = Chest(
+                        name = template.name,
+                        description = template.description,
+                        minGold = template.minGold,
+                        maxGold = template.maxGold,
+                        isItems = template.isItems,
+                        simpleName = simpleName
+                    )
+                    chest!!.addPosition(LatLng(lat, lng))
+                    chest!!.overwrite(tag)
+                }
+            }
+        }
+
+        return chest
+    }
 }
