@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import android.widget.ImageButton
 
 class ChestActivity : AppCompatActivity() {
     private val databaseHelper = DatabaseManager.getDatabaseInstance()
@@ -25,10 +26,18 @@ class ChestActivity : AppCompatActivity() {
             return
         }
 
+        val chestLoot: TextView = findViewById(R.id.chestLoot)
+        chestLoot.text = "${chest.minGold} - ${chest.maxGold}"
+
         val chestOpen: Button = findViewById(R.id.chestOpen)
 
         chestOpen.setOnClickListener {
             openChest()
+        }
+
+        val backBtn: ImageButton = findViewById(R.id.backBtn)
+        backBtn.setOnClickListener {
+            finish()
         }
     }
 
@@ -43,7 +52,7 @@ class ChestActivity : AppCompatActivity() {
     }
 
     private fun openChest() {
-        val reward = (chest.minGold..50).random()
+        val reward = (chest.minGold..chest.maxGold).random()
         val goldAmount: TextView = findViewById(R.id.goldAmount)
         goldAmount.text = "Gold: $reward"
 
