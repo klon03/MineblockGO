@@ -292,7 +292,10 @@ class LocationManager(private val context: Context, private val mMap: GoogleMap,
 
                 }
                 MapActivity.MainButtonMode.CHEST -> TODO()
-                MapActivity.MainButtonMode.SHOP -> TODO()
+                MapActivity.MainButtonMode.SHOP -> {
+                    val intent = Intent(context, ShopActivity::class.java)
+                    context.startActivity(intent)
+                }
                 else -> {}
             }
         }
