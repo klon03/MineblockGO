@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -18,7 +19,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-class LocationManager(private val context: Context, private val mMap: GoogleMap, private val currentLocationMarker: Marker) {
+class LocationManager(private val context: AppCompatActivity, private val mMap: GoogleMap, private val currentLocationMarker: Marker) {
     private val monsters: MutableList<Monster> = mutableListOf()
     private val chests: MutableList<Chest> = mutableListOf()
     private val shops: MutableList<Shop> = mutableListOf()
@@ -147,7 +148,7 @@ class LocationManager(private val context: Context, private val mMap: GoogleMap,
     }
 
     private fun monsterSnippet(mob: Monster) : String {
-        return context.getString(R.string.strength_snippet, mob.minStrength.toString(), mob.maxStrength.toString())
+        return "${mob.minStrength} - ${mob.maxStrength} strength"
     }
 
     private fun chestSnippet(chest: Chest) : String {
@@ -288,7 +289,8 @@ class LocationManager(private val context: Context, private val mMap: GoogleMap,
 
                     val intent = Intent(context, CombatActivity::class.java)
                     intent.putExtra("tag", entityInRange)
-                    context.startActivity(intent)
+                    //context.startActivity(intent)
+                    context.startActivityForResult(intent, MapActivity.MONSTER_REQUEST)
 
                 }
                 MapActivity.MainButtonMode.CHEST -> TODO()

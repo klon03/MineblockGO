@@ -17,6 +17,14 @@ data class Monster(val name: String, val description: String, val minStrength: I
         this.id = id
         this.strength = strength
     }
+
+    fun dealDamage(dmg: Int) {
+        strength = (strength - dmg).coerceAtLeast(0)
+    }
+
+    fun isDead(): Boolean {
+        return strength <= 0
+    }
 }
 
 object MonsterRepository {

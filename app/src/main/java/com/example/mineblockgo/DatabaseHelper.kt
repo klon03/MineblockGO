@@ -156,6 +156,33 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         return shopList
     }
 
+    fun selectMonster(tag: String): Monster? {
+        val db = this.readableDatabase
+        var monster: Monster? = null
+        val cursor = db.rawQuery("SELECT * FROM monsters WHERE tag = ?", arrayOf(tag))
 
+        cursor.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val name = cursor.getString(1)
+                val tag = cursor.getString(2)
+                val strength = cursor.getString(3).toInt()  // Konwersja na Int
+                val lat = cursor.getString(4).toDouble()    // Konwersja na Double
+                val lng = cursor.getString(5).toDouble()    // Konwersja na Double
 
+                val template = MonsterRepository.monsters.find { it.name == name }
+                if (template != null) {
+                    monster = Monster(
+                        name = name,
+                        description = template.description,
+                        minStrength = template.minStrength,
+                        maxStrength = template.maxStrength
+                    )
+                    monster!!.addPosition(LatLng(lat, lng))
+                    monster!!.overwrite(tag, strength)
+                }
+            }
+        }
+
+        return monster
+    }
 }

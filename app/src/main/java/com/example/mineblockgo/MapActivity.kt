@@ -23,8 +23,13 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Circle
 
+
+
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
+    companion object {
+        const val MONSTER_REQUEST = 123
+    }
     enum class MainButtonMode {
         DEFAULT,
         COMBAT,
@@ -202,4 +207,6 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 }
+
+
 
