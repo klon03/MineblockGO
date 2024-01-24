@@ -7,35 +7,47 @@
     android:padding="10dp"
     tools:context=".ChestActivity">
 
-    <TextView
-        android:id="@+id/chestName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Rare Chest"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+    <ImageButton
+        android:id="@+id/backBtn"
+        android:layout_width="49dp"
+        android:layout_height="49dp"
+        android:background="@color/white"
+        android:scaleType="center"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_chevron_left_24" />
 
     <TextView
         android:id="@+id/chestDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text=" super opis skrzynki super opis skrzynki super opis skrzynki super opis skrzynki super opis skrzynki"
+        android:layout_marginTop="28dp"
+        android:text="super opis skrzynki super opis skrzynki super opis skrzynki super opis skrzynki super opis skrzynki"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chestName" />
+
+    <TextView
+        android:id="@+id/chestName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/chest_name_placeholder"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/backBtn" />
 
     <ImageView
         android:id="@+id/chestImage"
         android:layout_width="108dp"
         android:layout_height="174dp"
-        android:layout_marginTop="164dp"
+        android:layout_marginTop="44dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.504"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chestDescription"
         app:srcCompat="@drawable/chest1" />
@@ -64,22 +76,23 @@
         android:id="@+id/chestOpen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:text="OPEN"
-        tools:layout_editor_absoluteX="159dp"
-        tools:layout_editor_absoluteY="345dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"/>
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <TextView
         android:id="@+id/goldAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
         android:text="Gold: 0"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chestOpen"/>
+        app:layout_constraintTop_toBottomOf="@+id/chestOpen" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

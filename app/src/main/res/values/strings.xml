@@ -9,5 +9,6 @@
     <string name="level_placeholder">Level 20</string>
     <string name="monster_description_placeholder">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</string>
     <string name="monster_name_placeholder">Monster name</string>
+    <string name="chest_name_placeholder">Chest name</string>
     <string name="strength_range">%1$s - %2$s</string>
 </resources>
