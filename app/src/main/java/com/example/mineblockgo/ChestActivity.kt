@@ -46,6 +46,7 @@ class ChestActivity : AppCompatActivity() {
         val reward = (chest.minGold..50).random()
         val goldAmount: TextView = findViewById(R.id.goldAmount)
         goldAmount.text = "Gold: $reward"
+        databaseHelper.updateUser("gold", reward)
 
         AlertDialog.Builder(this)
             .setTitle("Chest")

@@ -21,6 +21,7 @@ import com.example.mineblockgo.databinding.ActivityMapBinding
 
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatDelegate
 
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -31,6 +32,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
@@ -224,7 +226,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 MainButtonMode.SHOP -> {
                     turnOnBtn(mainBtn)
                     mainBtn.setBackgroundResource(R.drawable.shop_btn_bg)
-                    //mainBtn.setImageResource(R.drawable.chest1)
+                    mainBtn.setImageResource(R.drawable.gold_ingot)
                 }
                 else -> {
                     turnOffBtn(mainBtn)
@@ -237,6 +239,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap) {
         mMap = map
         map.uiSettings.isMapToolbarEnabled = false
+
+//        if (AppCompatDelegate.MODE_NIGHT_YES) {
+//            mMap.setMapStyle(
+//                MapStyleOptions()
+//            )
+//        } TODO
 
         centerUserBtn.setOnClickListener {
             currentLocationMarker?.let { marker ->
@@ -266,7 +274,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                     intent.putExtra("tag", locationManager.entityInRange)
                     chestActivityResultLauncher.launch(intent)
                 }
-                MainButtonMode.SHOP -> TODO()
+                MainButtonMode.SHOP -> {
+                    val intent = Intent(this, ShopActivity::class.java)
+                    startActivity(intent)
+                }
                 else -> {}
             }
         }
@@ -289,7 +300,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     @SuppressLint("SetTextI18n")
     private fun updateExp() {
-        val exp = databaseHelper.getExperience()
+        val exp = databaseHelper.getUser("experience")
         val lvl = calculateLvl(exp).toString()
         lvlTxt.text = "Level $lvl"
         expTxt.text = "EXP: $exp"

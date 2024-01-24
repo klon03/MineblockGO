@@ -299,6 +299,7 @@ class LocationManager(private val context: Context, private val mMap: GoogleMap,
                 if (monsters.removeIf { it.id == tag }) {
                     Log.w("fdf", "usunieto potwora")
                 }
+            }
             "chests" -> {
                 chests.removeIf { it.id == tag }
             }

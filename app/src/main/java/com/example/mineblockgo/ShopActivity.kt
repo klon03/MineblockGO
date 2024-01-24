@@ -25,16 +25,16 @@ class ShopActivity: AppCompatActivity() {
     private lateinit var specialOfferLayout: LinearLayout
     private lateinit var backButton: ImageButton
 
-    val databaseHelper = DatabaseManager.getDatabaseInstance()
+    private val databaseHelper = DatabaseManager.getDatabaseInstance()
 
-    private var playerCurrency = 100
+    private var playerCurrency = databaseHelper.getUser("gold")
     //  lista naszych przedmiotów
     private val weaponsList = listOf(
         Weapon(1,"Wooden Sword",R.drawable.wooden_sword,10,20,15),
         Weapon(1,"Stone Sword",R.drawable.stone_sword,20,30,30),
         Weapon(1,"Golden Sword",R.drawable.golden_sword,20,40,50),
         Weapon(1,"Iron Sword",R.drawable.iron_sword,35,60,70),
-        Weapon(1,"Diamond Sword",R.drawable.diamond_sword,50,70,99)
+        Weapon(1,"Diamond Sword",R.drawable.diamond_sword2,50,70,99)
     )
 
     @SuppressLint("MissingInflatedId")
@@ -191,6 +191,7 @@ class ShopActivity: AppCompatActivity() {
             playerCurrency -= price.toInt()
             if (databaseHelper.insertItem(wp))
             {
+                databaseHelper.updateUser("gold", -price.toInt())
                 updatePlayersGold()
                 button.text = "SOLD OUT"
                 button.isEnabled = false

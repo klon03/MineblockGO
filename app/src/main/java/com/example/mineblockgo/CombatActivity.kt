@@ -124,7 +124,7 @@ class CombatActivity : AppCompatActivity() {
             builder.setTitle("You won!")
                 .setMessage("You have slain the monster and gained some experience!")
                 .setPositiveButton("OK") { dialog, _ ->
-                    databaseHelper.updateExperience(monster.startingStrength)
+                    databaseHelper.updateUser("experience", monster.startingStrength)
                     val resultIntent = Intent()
                     resultIntent.putExtra("tag", monster.id)
                     setResult(Activity.RESULT_OK, resultIntent)
@@ -137,7 +137,7 @@ class CombatActivity : AppCompatActivity() {
             builder.setTitle("You lost!")
                 .setMessage("The monster was better this time! You lost some experience.")
                 .setPositiveButton("OK") { dialog, _ ->
-                    databaseHelper.updateExperience(-monster.startingStrength)
+                    databaseHelper.updateUser("experience", -monster.startingStrength)
                     dialog.dismiss()
                     finish()
                 }

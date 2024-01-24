@@ -297,9 +297,9 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         }
     }
 
-    fun getExperience(): Int {
+    fun getUser(option: String): Int {
         val db = readableDatabase
-        val cursor = db?.rawQuery("SELECT value_int FROM user WHERE name = ?", arrayOf("experience"))
+        val cursor = db?.rawQuery("SELECT value_int FROM user WHERE name = ?", arrayOf(option))
 
         return if (cursor != null && cursor.moveToFirst()) {
             val level = cursor.getInt(0)
@@ -312,14 +312,14 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         }
     }
 
-    fun updateExperience(value: Int) {
+    fun updateUser(option: String, value: Int) {
         val db = this.writableDatabase
-
-        val currentExp = getExperience()
+        Log.w("ww", "przakazano $value")
+        val currentExp = getUser(option)
         val newExp = maxOf(currentExp + value, 0)
         Log.w("ww", "dodano $newExp")
         val contentValues = ContentValues()
         contentValues.put("value_int", newExp)
-        db.update("user", contentValues, "name=?", arrayOf("experience"))
+        db.update("user", contentValues, "name=?", arrayOf(option))
     }
 }
