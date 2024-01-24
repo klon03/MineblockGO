@@ -293,12 +293,7 @@ class LocationManager(private val context: AppCompatActivity, private val mMap: 
                     context.startActivityForResult(intent, MapActivity.MONSTER_REQUEST)
 
                 }
-                MapActivity.MainButtonMode.CHEST -> {
-
-                    val intent = Intent(context, ChestActivity::class.java)
-                    intent.putExtra("tag", entityInRange)
-                    context.startActivity(intent)
-                }
+                MapActivity.MainButtonMode.CHEST -> TODO()
                 MapActivity.MainButtonMode.SHOP -> TODO()
                 else -> {}
             }

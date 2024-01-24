@@ -22,9 +22,9 @@
             android:name=".CombatActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".ChestActivity"
-            android:exported="false" />
+        <activity android:name=".Settings">
+        </activity>
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

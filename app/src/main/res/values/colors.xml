@@ -5,4 +5,7 @@
     <color name="mainButtonFight">#ff4a4a</color>
     <color name="mainButtonChest">#fffcd6</color>
     <color name="mainButtonShop">#4eba4e</color>
+    <color name="dark">#121212</color>
+    <color name="purple">#BB86FC</color>
+    <color name="darkpurple">#FF3700B3</color>
 </resources>
