@@ -1,5 +1,8 @@
 package com.example.mineblockgo
 
+
+import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -11,6 +14,7 @@ class Settings : AppCompatActivity() {
 
     private val themeTitleList = arrayOf("Light", "Dark", "Auto")
     private lateinit var restart: Button
+    @SuppressLint("SetJavaScriptEnabled")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +46,9 @@ class Settings : AppCompatActivity() {
         }
 
         restart.setOnClickListener {
+            val intent = Intent(this, MapActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
             finish()
             startActivity(intent)
             overridePendingTransition(0, 0)

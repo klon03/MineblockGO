@@ -22,7 +22,11 @@
             android:name=".CombatActivity"
             android:exported="false" />
 
-        <activity android:name=".Settings">
+        <activity android:name=".Settings"
+            android:exported="true">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
         </activity>
 
 

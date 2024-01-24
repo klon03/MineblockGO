@@ -1,32 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:padding="16dp"
     tools:context=".Settings">
 
-
-
-    <Button
-        android:id="@+id/changeThemeBtn"
-        style="@style/buttonStyle"
+    <!-- Toolbar na samej górze -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:gravity="center_vertical"
-        android:text="Theme"
-        android:textAllCaps="false"
-        android:textSize="20sp" />
+        android:layout_height="?attr/actionBarSize"
+        app:title="Settings" />
 
-    <Button
-        android:id="@+id/restartBtn"
-        style="@style/buttonStyle"
+    <RelativeLayout
+        android:id="@+id/changeThemeBtnContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/changeThemeBtn"
-        android:gravity="start"
-        android:text="Restart"
-        android:textAllCaps="false"
-        android:textSize="16sp" />
+        android:layout_below="@id/toolbar"
+        android:gravity="center_vertical">
+
+        <Button
+            android:id="@+id/changeThemeBtn"
+            style="@style/buttonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:gravity="center_vertical"
+            android:text="Theme"
+            android:textAllCaps="false"
+            android:textSize="20sp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/restartBtnContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/changeThemeBtnContainer"
+        android:gravity="start">
+
+        <Button
+            android:id="@+id/restartBtn"
+            style="@style/buttonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="Restart"
+            android:textAllCaps="false"
+            android:textSize="16sp" />
+
+
+
+    </RelativeLayout>
 
 </RelativeLayout>
