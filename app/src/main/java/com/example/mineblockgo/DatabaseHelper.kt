@@ -55,6 +55,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         )
         db?.execSQL("INSERT INTO user (name, value_int) VALUES ('gold', 50)")
         db?.execSQL("INSERT INTO user (name, value_int) VALUES ('experience', 0)")
+        db?.execSQL("INSERT INTO items (id, name, iconID, endurance, dmg) VALUES (0, 'Wooden Sword', ${R.drawable.wooden_sword}, 5, 3)")
 
     }
 
@@ -117,9 +118,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         return false
     }
 
-    fun removeItem(itemId: Int) { //usuwanie itemka z bazy
-        writableDatabase.delete("items", "id = ?", arrayOf(itemId.toString()))
-    }
+
 
     fun getAllMonsters(): List<Monster> {
         val monsterList = mutableListOf<Monster>()
@@ -321,5 +320,33 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         val contentValues = ContentValues()
         contentValues.put("value_int", newExp)
         db.update("user", contentValues, "name=?", arrayOf(option))
+    }
+
+    fun updateItem(itemId: Int): Int {
+        val db = writableDatabase
+        val cursor = db.rawQuery("SELECT endurance FROM items WHERE id = ?", arrayOf(itemId.toString()))
+
+        return if (cursor != null && cursor.moveToFirst()) {
+            val endurance = cursor.getInt(0)
+            cursor.close()
+
+            if (endurance > 1) {
+                // Aktualizacja odejmując 1
+                val updatedEndurance = endurance - 1
+                val values = ContentValues().apply {
+                    put("endurance", updatedEndurance)
+                }
+                db.update("items", values, "id = ?", arrayOf(itemId.toString()))
+
+                updatedEndurance
+            } else {
+                // Usuń zużyty item
+                db.delete("items", "id = ?", arrayOf(itemId.toString()))
+                -1
+            }
+        } else {
+            cursor?.close()
+            -1
+        }
     }
 }

@@ -30,11 +30,11 @@ class ShopActivity: AppCompatActivity() {
     private var playerCurrency = databaseHelper.getUser("gold")
     //  lista naszych przedmiotów
     private val weaponsList = listOf(
-        Weapon(1,"Wooden Sword",R.drawable.wooden_sword,10,20,15),
-        Weapon(1,"Stone Sword",R.drawable.stone_sword,20,30,30),
-        Weapon(1,"Golden Sword",R.drawable.golden_sword,20,40,50),
-        Weapon(1,"Iron Sword",R.drawable.iron_sword,35,60,70),
-        Weapon(1,"Diamond Sword",R.drawable.diamond_sword2,50,70,99)
+        Weapon(1,"Wooden Sword",R.drawable.wooden_sword,5,3,15),
+        Weapon(1,"Stone Sword",R.drawable.stone_sword,10,6,30),
+        Weapon(1,"Golden Sword",R.drawable.golden_sword,5,20,50),
+        Weapon(1,"Iron Sword",R.drawable.iron_sword,15,12,70),
+        Weapon(1,"Diamond Sword",R.drawable.diamond_sword2,20,20,99)
     )
 
     @SuppressLint("MissingInflatedId")

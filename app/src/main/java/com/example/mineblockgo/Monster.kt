@@ -31,6 +31,8 @@ data class Monster(val name: String, val description: String, val minStrength: I
 
 object MonsterRepository {
     val monsters = listOf(
-        Monster("Zombie", "Description description", 5, 15)
+        Monster("Zombie", "The most popular monster out there. It should not be a challenge for you.", 5, 15),
+        Monster("Skeleton", "A bit tougher than Zombie so watch out. It is harder to hit him also!", 10, 30),
+        Monster("Enderman", "A beast from The End dimension! Tremendously hard to kill, good luck!", 40, 150)
     )
 }

@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.mineblockgo.databinding.ActivityMapBinding
 
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 
@@ -61,6 +62,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var inventoryBtn: ImageButton
     private lateinit var lvlTxt: TextView
     private lateinit var expTxt: TextView
+    private var oldLevel: Int = 0
 
     private val combatActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -302,6 +304,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun updateExp() {
         val exp = databaseHelper.getUser("experience")
         val lvl = calculateLvl(exp).toString()
+
+        if (oldLevel != 0 && lvl.toInt() > oldLevel) Toast.makeText(this, "You've just leveled up!", Toast.LENGTH_LONG).show()
+        oldLevel = lvl.toInt()
         lvlTxt.text = "Level $lvl"
         expTxt.text = "EXP: $exp"
     }

@@ -30,6 +30,10 @@ class ChestActivity : AppCompatActivity() {
         chestLoot.text = "${chest.minGold} - ${chest.maxGold}"
 
         val chestOpen: Button = findViewById(R.id.chestOpen)
+        val chestName: TextView = findViewById(R.id.chestName)
+        chestName.text = chest.name
+        val chestDescription: TextView = findViewById(R.id.chestDescription)
+        chestDescription.text = chest.description
 
         chestOpen.setOnClickListener {
             openChest()

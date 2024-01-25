@@ -133,7 +133,23 @@ class LocationManager(private val context: Context, private val mMap: GoogleMap,
                 "monster" -> {
                     val monster = it as Monster
                     monsters.add(monster)
-                    addMarker(monster.name, 96, 160, monster.position, monster.name, monsterSnippet(monster), monster.id)
+                    val width: Int
+                    val height: Int
+                    when(monster.name) {
+                        "Skeleton" -> {
+                            width = 96
+                            height = 166
+                        }
+                        "Enderman" -> {
+                            width = 96
+                            height = 166
+                        }
+                        else -> {
+                            width = 96
+                            height = 160
+                        }
+                    }
+                    addMarker(monster.name, width, height, monster.position, monster.name, monsterSnippet(monster), monster.id)
                 }
                 "chest" -> {
                     val chest = it as Chest
