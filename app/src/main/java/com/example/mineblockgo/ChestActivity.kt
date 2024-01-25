@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import android.widget.ImageButton
+import android.widget.ImageView
 
 class ChestActivity : AppCompatActivity() {
     private val databaseHelper = DatabaseManager.getDatabaseInstance()
@@ -34,6 +35,10 @@ class ChestActivity : AppCompatActivity() {
         chestName.text = chest.name
         val chestDescription: TextView = findViewById(R.id.chestDescription)
         chestDescription.text = chest.description
+
+        val imageResource = resources.getIdentifier(chest.simpleName.lowercase(), "drawable", packageName)
+        val chestImage : ImageView = findViewById(R.id.chestImage)
+        chestImage.setImageResource(imageResource)
 
         chestOpen.setOnClickListener {
             openChest()

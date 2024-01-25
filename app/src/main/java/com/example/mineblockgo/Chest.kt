@@ -17,6 +17,8 @@ data class Chest(val name: String, val description: String, var minGold: Int, va
 
 object ChestRepository {
     val chests = listOf(
-        Chest("Normal chest", "Just a chest out in the wild. Nothing to be suspicious of.", (1..10).random(), (1..10).random() * 10, false, "chest1")
+        Chest("Normal chest", "Just a chest out in the wild. Nothing to be suspicious of.", 5, 50, false, "chest1"),
+        Chest("Rare chest", "This chest has a suspicious glow. I wonder what could be inside.", 10, 60, false, "rarechest"),
+        Chest("Legendary chest", "This chest seems to be storing something very important. I think we should check it out.", 30, 100, false, "legendarychest")
     )
 }
