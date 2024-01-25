@@ -3,7 +3,20 @@
     <style name="Base.Theme.MineblockGO" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@color/almostwhite</item>
     </style>
 
     <style name="Theme.MineblockGO" parent="Base.Theme.MineblockGO" />
+
+    <style name="TextViewStyle">
+        <item name="android:textColor">@color/dark</item>
+        <item name="android:background">@color/purple</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="buttonStyle">
+        <item name="android:textColor">@color/dark</item>
+        <item name="android:backgroundTint">@color/almostwhite</item>
+    </style>
 </resources>

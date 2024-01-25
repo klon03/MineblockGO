@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.FrameLayout
 import android.widget.ImageButton
+import android.content.Intent
 
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mineblockgo.databinding.ActivityMapBinding
@@ -114,8 +115,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         settingsBtn.setOnClickListener {
-            // TODO
+            val settingsIntent = Intent(this, Settings::class.java)
+            startActivity(settingsIntent)
         }
+
+
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapFragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
