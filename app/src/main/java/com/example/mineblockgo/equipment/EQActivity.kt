@@ -5,22 +5,20 @@ import android.os.Bundle
 import com.example.mineblockgo.objects.Weapon
 import android.widget.ImageButton
 import android.widget.Button
+import android.widget.TextView
 
 
 class EQActivity : AppCompatActivity() {
-
+    private val databaseHelper = DatabaseManager.getDatabaseInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_eq)
+        val gold = databaseHelper.getUser("gold")
+        val goldTxt : TextView = findViewById(R.id.goldTxt)
+        goldTxt.text = "$gold"
 
-        //tymczasowe dodawanie !!!!!!!!!!
-        /*
-        val xd = Weapon(0,"dupa dupa cyce cyce", R.drawable.diamond_sword, 10,10,10)
-        val dx = Weapon(3,"drugi mieczol", R.drawable.diamond_sword, 10,10,10)
-        DatabaseManager.getDatabaseInstance().insertItem(xd)
-        DatabaseManager.getDatabaseInstance().insertItem(dx)*/
 
-        //to musi być w main wpisane
+
         val imageButton0 = findViewById<ImageButton>(R.id.imageButton0)
         val imageButton1 = findViewById<ImageButton>(R.id.imageButton1)
         val imageButton2 = findViewById<ImageButton>(R.id.imageButton2)
