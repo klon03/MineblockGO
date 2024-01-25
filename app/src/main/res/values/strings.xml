@@ -6,8 +6,16 @@
     <string name="permissionTitle">Wymagane uprawnienia</string>
     <string name="main_button">Main button</string>
     <string name="center_user">Center user</string>
+
+    <string name="shop_name">Shop for kotlin project</string>
+    <string name="yourShop">Your Shop</string>
+    <string name="playersGold">100</string>
+
     <string name="level_placeholder">Level 20</string>
     <string name="monster_description_placeholder">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</string>
     <string name="monster_name_placeholder">Monster name</string>
+    <string name="chest_name_placeholder">Chest</string>
+    <string name="chest_description_placeholder">This chest contains valuable gold!!</string>
     <string name="strength_range">%1$s - %2$s</string>
+
 </resources>

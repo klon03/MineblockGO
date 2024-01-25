@@ -4,7 +4,13 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+
+import com.example.mineblockgo.objects.Weapon
+
+import android.util.Log
+
 import com.google.android.gms.maps.model.LatLng
+import java.sql.SQLException
 
 object DatabaseManager {
     private var instance: DatabaseHelper? = null
@@ -38,10 +44,22 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
             "CREATE TABLE IF NOT EXISTS shops " +
                     "(id INTEGER PRIMARY KEY AUTOINCREMENT, tag TEXT, lat REAL, lng REAL)"
         )
+        db?.execSQL(
+
+            "CREATE TABLE IF NOT EXISTS items " +
+                    "(id INTEGER PRIMARY KEY, name TEXT, iconID INTEGER, endurance INTEGER, dmg INTEGER)"
+        )
+        db?.execSQL(
+            "CREATE TABLE IF NOT EXISTS user " +
+                    "(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, value_int INTEGER);"
+        )
+        db?.execSQL("INSERT INTO user (name, value_int) VALUES ('gold', 50)")
+        db?.execSQL("INSERT INTO user (name, value_int) VALUES ('experience', 0)")
+        db?.execSQL("INSERT INTO items (id, name, iconID, endurance, dmg) VALUES (0, 'Wooden Sword', ${R.drawable.wooden_sword}, 5, 3)")
+
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-
     }
 
     fun insertMonster(monster: Monster) {
@@ -76,6 +94,31 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
 
         writableDatabase.insert("shops", null, values)
     }
+
+    fun insertItem(item: Weapon): Boolean{
+        var weaponList = getAllItems()
+        for (i in 0..8){
+            val containsObjectWithId = weaponList.any { it.wpID == i }
+
+            if (!containsObjectWithId) {
+                item.wpID = i
+                val values = ContentValues().apply {
+                    put("id", item.wpID)
+                    put("name", item.name)
+                    put("iconID", item.iconId)
+                    put("endurance", item.endurance)
+                    put("dmg", item.damage)
+                }
+
+                writableDatabase.insert("items", null, values)
+                return true
+            }
+
+        }
+        return false
+    }
+
+
 
     fun getAllMonsters(): List<Monster> {
         val monsterList = mutableListOf<Monster>()
@@ -156,6 +199,30 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         return shopList
     }
 
+
+    fun getAllItems(): List<Weapon>{
+        val itemList = mutableListOf<Weapon>()
+
+        val query = "SELECT * FROM items"
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(query, null)
+
+        cursor.use {
+            while (it.moveToNext()) {
+                val id = it.getInt(0)
+                val name = it.getString(1)
+                val iconID = it.getInt(2)
+                val endurance = it.getInt(3)
+                val dmg = it.getInt(4)
+                val weapon = Weapon(id, name, iconID, endurance, dmg, 0)
+                itemList.add(weapon)
+
+            }
+        }
+
+        return itemList
+    }
+
     fun selectMonster(tag: String): Monster? {
         val db = this.readableDatabase
         var monster: Monster? = null
@@ -184,5 +251,102 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
         }
 
         return monster
+    }
+
+    fun selectChest(tag: String): Chest? {
+        val db = this.readableDatabase
+        var chest: Chest? = null
+        val cursor = db.rawQuery("SELECT * FROM chests WHERE tag = ?", arrayOf(tag))
+
+
+        cursor.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val simpleName = cursor.getString(1)
+                val tag = cursor.getString(2)
+                val lat = cursor.getString(3).toDouble()
+                val lng = cursor.getString(4).toDouble()
+
+                val template = ChestRepository.chests.find { it.simpleName == simpleName }
+                if (template != null) {
+                    chest = Chest(
+                        name = template.name,
+                        description = template.description,
+                        minGold = template.minGold,
+                        maxGold = template.maxGold,
+                        isItems = template.isItems,
+                        simpleName = simpleName
+                    )
+                    chest!!.addPosition(LatLng(lat, lng))
+                    chest!!.overwrite(tag)
+                }
+            }
+        }
+
+        return chest
+    }
+
+    fun deleteRowByTag(tableName: String, tag: String): Boolean {
+        val db = writableDatabase
+
+        return try {
+            val affectedRows = db.delete(tableName, "tag=?", arrayOf(tag))
+            affectedRows > 0
+        } catch (e: SQLException) {
+            false
+        }
+    }
+
+    fun getUser(option: String): Int {
+        val db = readableDatabase
+        val cursor = db?.rawQuery("SELECT value_int FROM user WHERE name = ?", arrayOf(option))
+
+        return if (cursor != null && cursor.moveToFirst()) {
+            val level = cursor.getInt(0)
+            cursor.close()
+            Log.w("ww", "pobrano $level")
+            level
+        } else {
+            cursor?.close()
+            -1
+        }
+    }
+
+    fun updateUser(option: String, value: Int) {
+        val db = this.writableDatabase
+        Log.w("ww", "przakazano $value")
+        val currentExp = getUser(option)
+        val newExp = maxOf(currentExp + value, 0)
+        Log.w("ww", "dodano $newExp")
+        val contentValues = ContentValues()
+        contentValues.put("value_int", newExp)
+        db.update("user", contentValues, "name=?", arrayOf(option))
+    }
+
+    fun updateItem(itemId: Int): Int {
+        val db = writableDatabase
+        val cursor = db.rawQuery("SELECT endurance FROM items WHERE id = ?", arrayOf(itemId.toString()))
+
+        return if (cursor != null && cursor.moveToFirst()) {
+            val endurance = cursor.getInt(0)
+            cursor.close()
+
+            if (endurance > 1) {
+                // Aktualizacja odejmując 1
+                val updatedEndurance = endurance - 1
+                val values = ContentValues().apply {
+                    put("endurance", updatedEndurance)
+                }
+                db.update("items", values, "id = ?", arrayOf(itemId.toString()))
+
+                updatedEndurance
+            } else {
+                // Usuń zużyty item
+                db.delete("items", "id = ?", arrayOf(itemId.toString()))
+                -1
+            }
+        } else {
+            cursor?.close()
+            -1
+        }
     }
 }
