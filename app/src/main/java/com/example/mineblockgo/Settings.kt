@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -14,6 +15,7 @@ class Settings : AppCompatActivity() {
 
     private val themeTitleList = arrayOf("Light", "Dark", "Auto")
     private lateinit var restart: Button
+    private lateinit var backBtn : ImageButton
     @SuppressLint("SetJavaScriptEnabled")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +25,10 @@ class Settings : AppCompatActivity() {
 
         val changeThemeBtn = findViewById<Button>(R.id.changeThemeBtn)
         restart = findViewById(R.id.restartBtn)
+        backBtn = findViewById(R.id.backBtn)
+        backBtn.setOnClickListener {
+            finish()
+        }
 
 
         val sharedPreferenceManger = SharedPreferenceManger(this)

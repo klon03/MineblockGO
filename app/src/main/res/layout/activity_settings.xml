@@ -8,11 +8,22 @@
     android:padding="16dp"
     tools:context=".Settings">
 
-    <!-- Toolbar na samej górze -->
+    <ImageButton
+        android:id="@+id/backBtn"
+        android:layout_width="49dp"
+        android:layout_height="49dp"
+        android:background="@color/white"
+        android:scaleType="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_chevron_left_24" />
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:layout_toEndOf="@id/backBtn"
+        android:gravity="end"
         app:title="Settings" />
 
     <RelativeLayout
@@ -50,8 +61,6 @@
             android:text="Restart"
             android:textAllCaps="false"
             android:textSize="16sp" />
-
-
 
     </RelativeLayout>
 
